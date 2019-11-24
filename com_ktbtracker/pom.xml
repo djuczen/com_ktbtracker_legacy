@@ -4,7 +4,7 @@
   <artifactId>ktbtracker</artifactId>
   <version>4.0.0</version>
   <packaging>pom</packaging>
-  <name>King Tiger Blackbelt Tracking System</name>
+  <name>King Tiger Black Belt Tracking System</name>
   
   <properties>
   	<timestamp>${maven.build.timestamp}</timestamp>
