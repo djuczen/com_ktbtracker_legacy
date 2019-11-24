@@ -3,7 +3,7 @@
  * @package		Joomla.Administrator
  * @subpackage 	com_ktbtracker
  * 
- * @copyright	Copyright (C) 2012-@COPYR_YEAR@ David Uczen Photography, Inc. All Rights Reserved.
+ * @copyright	Copyright (C) 2012-2017 David Uczen Photography, Inc. All Rights Reserved.
  * @license		Licensed Materials - Property of David Uczen Photography, Inc.; see LICENSE.txt
  *
  * $Id$
@@ -47,7 +47,7 @@
 			label="COM_KTBTRACKER_FIELD_SITUPS_LABEL"
 			description="COM_KTBTRACKER_FIELD_SITUPS_DESC"
 			hint="COM_KTBTRACKER_FIELD_SITUPS_PLACEHOLDER"
-			default="@GOAL_SITUPS@"
+			default="10000"
 			class="inputbox"
 			size="20"
 			filter="intval">
@@ -58,7 +58,7 @@
 			label="COM_KTBTRACKER_FIELD_BURPEES_LABEL"
 			description="COM_KTBTRACKER_FIELD_BURPEES_DESC"
 			hint="COM_KTBTRACKER_FIELD_BURPEES_PLACEHOLDER"
-			default="@GOAL_BURPEES@"
+			default="1000"
 			class="inputbox"
 			size="20"
 			filter="intval">
@@ -69,7 +69,7 @@
 			label="COM_KTBTRACKER_FIELD_KICKS_LABEL"
 			description="COM_KTBTRACKER_FIELD_KICKS_DESC"
 			hint="COM_KTBTRACKER_FIELD_KICKS_PLACEHOLDER"
-			default="@GOAL_KICKS@"
+			default="10500"
 			class="inputbox"
 			size="20"
 			filter="intval">
@@ -80,7 +80,7 @@
 			label="COM_KTBTRACKER_FIELD_SPARRING_LABEL"
 			description="COM_KTBTRACKER_FIELD_SPARRING_DESC"
 			hint="COM_KTBTRACKER_FIELD_SPARRING_PLACEHOLDER"
-			default="@GOAL_SPARRING@"
+			default="210"
 			class="inputbox"
 			size="20"
 			filter="intval">
@@ -91,7 +91,7 @@
 			label="COM_KTBTRACKER_FIELD_POOMSAE_LABEL"
 			description="COM_KTBTRACKER_FIELD_POOMSAE_DESC"
 			hint="COM_KTBTRACKER_FIELD_POOMSAE_PLACEHOLDER"
-			default="@GOAL_POOMSAE@"
+			default="1500"
 			class="inputbox"
 			size="20"
 			filter="intval">
@@ -102,7 +102,7 @@
 			label="COM_KTBTRACKER_FIELD_SELF_DEFENSE_LABEL"
 			description="COM_KTBTRACKER_FIELD_SELF_DEFENSE_DESC"
 			hint="COM_KTBTRACKER_FIELD_SELF_DEFENSE_PLACEHOLDER"
-			default="@GOAL_SELF_DEFENSE@"
+			default="1500"
 			class="inputbox"
 			size="20"
 			filter="intval">
@@ -113,7 +113,7 @@
 			label="COM_KTBTRACKER_FIELD_PULLUPS_LABEL"
 			description="COM_KTBTRACKER_FIELD_PULLUPS_DESC"
 			hint="COM_KTBTRACKER_FIELD_PULLUPS_PLACEHOLDER"
-			default="@GOAL_PULLUPS@"
+			default="350"
 			class="inputbox"
 			size="20"
 			filter="intval">
@@ -124,7 +124,7 @@
 			label="COM_KTBTRACKER_FIELD_ROLLS_FALLS_LABEL"
 			description="COM_KTBTRACKER_FIELD_ROLLS_FALLS_DESC"
 			hint="COM_KTBTRACKER_FIELD_ROLLS_FALLS_PLACEHOLDER"
-			default="@GOAL_ROLLS_FALLS@"
+			default="1000"
 			class="inputbox"
 			size="20"
 			filter="intval">
@@ -142,7 +142,7 @@
 			label="COM_KTBTRACKER_FIELD_CLASS_SATURDAY_LABEL"
 			description="COM_KTBTRACKER_FIELD_CLASS_SATURDAY_DESC"
 			hint="COM_KTBTRACKER_FIELD_CLASS_SATURDAY_PLACEHOLDER"
-			default="@GOAL_CLASS_SATURDAY@"
+			default="10"
 			class="inputbox"
 			size="20"
 			filter="intval">
@@ -153,7 +153,7 @@
 			label="COM_KTBTRACKER_FIELD_CLASS_WEEKDAY_LABEL"
 			description="COM_KTBTRACKER_FIELD_CLASS_WEEKDAY_DESC"
 			hint="COM_KTBTRACKER_FIELD_CLASS_WEEKDAY_PLACEHOLDER"
-			default="@GOAL_CLASS_WEEKDAY@"
+			default="10"
 			class="inputbox"
 			size="20"
 			filter="intval">
@@ -164,7 +164,7 @@
 			label="COM_KTBTRACKER_FIELD_CLASS_SPARRING_LABEL"
 			description="COM_KTBTRACKER_FIELD_CLASS_SPARRING_DESC"
 			hint="COM_KTBTRACKER_FIELD_CLASS_SPARRING_PLACEHOLDER"
-			default="@GOAL_CLASS_SPARRING@"
+			default="15"
 			class="inputbox"
 			size="20"
 			filter="intval">
@@ -175,7 +175,7 @@
 			label="COM_KTBTRACKER_FIELD_CLASS_PMAA_LABEL"
 			description="COM_KTBTRACKER_FIELD_CLASS_PMAA_DESC"
 			hint="COM_KTBTRACKER_FIELD_CLASS_PMAA_PLACEHOLDER"
-			default="@GOAL_CLASS_PMAA@"
+			default="8"
 			class="inputbox"
 			size="20"
 			filter="intval">
@@ -186,7 +186,7 @@
 			label="COM_KTBTRACKER_FIELD_CLASS_MASTERQ_LABEL"
 			description="COM_KTBTRACKER_FIELD_CLASS_MASTERQ_DESC"
 			hint="COM_KTBTRACKER_FIELD_CLASS_MASTERQ_PLACEHOLDER"
-			default="@GOAL_CLASS_MASTERQ@"
+			default="10"
 			class="inputbox"
 			size="20"
 			filter="intval">
@@ -197,7 +197,7 @@
 			label="COM_KTBTRACKER_FIELD_CLASS_DREAMTEAM_LABEL"
 			description="COM_KTBTRACKER_FIELD_CLASS_DREAMTEAM_DESC"
 			hint="COM_KTBTRACKER_FIELD_CLASS_DREAMTEAM_PLACEHOLDER"
-			default="@GOAL_CLASS_DREAMTEAM@"
+			default="10"
 			class="inputbox"
 			size="20"
 			filter="intval">
@@ -208,7 +208,7 @@
 			label="COM_KTBTRACKER_FIELD_CLASS_HYPERPRO_LABEL"
 			description="COM_KTBTRACKER_FIELD_CLASS_HYPERPRO_DESC"
 			hint="COM_KTBTRACKER_FIELD_CLASS_HYPERPRO_PLACEHOLDER"
-			default="@GOAL_CLASS_HYPERPRO@"
+			default="10"
 			class="inputbox"
 			size="20"
 			filter="intval">
@@ -226,7 +226,7 @@
 			label="COM_KTBTRACKER_FIELD_JOURNALS_LABEL"
 			description="COM_KTBTRACKER_FIELD_JOURNALS_DESC"
 			hint="COM_KTBTRACKER_FIELD_JOURNALS_PLACEHOLDER"
-			default="@GOAL_JOURNALS@"
+			default="50"
 			class="inputbox"
 			size="20"
 			filter="intval">
@@ -237,7 +237,7 @@
 			label="COM_KTBTRACKER_FIELD_RAOK_LABEL"
 			description="COM_KTBTRACKER_FIELD_RAOK_DESC"
 			hint="COM_KTBTRACKER_FIELD_RAOK_PLACEHOLDER"
-			default="@GOAL_RAOK@"
+			default="200"
 			class="inputbox"
 			size="20"
 			filter="intval">
@@ -248,7 +248,7 @@
 			label="COM_KTBTRACKER_FIELD_MENTEE_LABEL"
 			description="COM_KTBTRACKER_FIELD_MENTEE_DESC"
 			hint="COM_KTBTRACKER_FIELD_MENTEE_PLACEHOLDER"
-			default="@GOAL_MENTEE@"
+			default="15"
 			class="inputbox"
 			size="20"
 			filter="intval">
@@ -259,7 +259,7 @@
 			label="COM_KTBTRACKER_FIELD_MENTOR_LABEL"
 			description="COM_KTBTRACKER_FIELD_MENTOR_DESC"
 			hint="COM_KTBTRACKER_FIELD_MENTOR_PLACEHOLDER"
-			default="@GOAL_MENTOR@"
+			default="15"
 			class="inputbox"
 			size="20"
 			filter="intval">
@@ -270,7 +270,7 @@
 			label="COM_KTBTRACKER_FIELD_LEADERSHIP_LABEL"
 			description="COM_KTBTRACKER_FIELD_LEADERSHIP_DESC"
 			hint="COM_KTBTRACKER_FIELD_LEADERSHIP_PLACEHOLDER"
-			default="@GOAL_LEADERSHIP@"
+			default="20"
 			class="inputbox"
 			size="20"
 			filter="intval">
@@ -281,7 +281,7 @@
 			label="COM_KTBTRACKER_FIELD_LEADERSHIP2_LABEL"
 			description="COM_KTBTRACKER_FIELD_LEADERSHIP2_DESC"
 			hint="COM_KTBTRACKER_FIELD_LEADERSHIP2_PLACEHOLDER"
-			default="@GOAL_LEADERSHIP2@"
+			default="10"
 			class="inputbox"
 			size="20"
 			filter="intval">
@@ -292,7 +292,7 @@
 			label="COM_KTBTRACKER_FIELD_MEDITATION_LABEL"
 			description="COM_KTBTRACKER_FIELD_MEDITATION_DESC"
 			hint="COM_KTBTRACKER_FIELD_MEDITATION_PLACEHOLDER"
-			default="@GOAL_MEDITATION@"
+			default="500"
 			class="inputbox"
 			size="20"
 			filter="intval">
@@ -310,7 +310,7 @@
 			label="COM_KTBTRACKER_FIELD_INST_CAMPS_LABEL"
 			description="COM_KTBTRACKER_FIELD_INST_CAMPS_DESC"
 			hint="COM_KTBTRACKER_FIELD_INST_CAMPS_PLACEHOLDER"
-			default="@GOAL_INST_CAMPS@"
+			default="1"
 			class="inputbox"
 			size="20"
 			filter="intval">
@@ -321,7 +321,7 @@
 			label="COM_KTBTRACKER_FIELD_LEAD_CLASS_LABEL"
 			description="COM_KTBTRACKER_FIELD_LEAD_CLASS_DESC"
 			hint="COM_KTBTRACKER_FIELD_LEAD_CLASS_PLACEHOLDER"
-			default="@GOAL_LEAD_CLASS@"
+			default="24"
 			class="inputbox"
 			size="20"
 			filter="intval">
@@ -332,7 +332,7 @@
 			label="COM_KTBTRACKER_FIELD_ASSIST_CLASS_LABEL"
 			description="COM_KTBTRACKER_FIELD_ASSIST_CLASS_DESC"
 			hint="COM_KTBTRACKER_FIELD_ASSIST_CLASS_PLACEHOLDER"
-			default="@GOAL_ASSIST_CLASS@"
+			default="24"
 			class="inputbox"
 			size="20"
 			filter="intval">
@@ -343,7 +343,7 @@
 			label="COM_KTBTRACKER_FIELD_PRE_TEST_LABEL"
 			description="COM_KTBTRACKER_FIELD_PRE_TEST_DESC"
 			hint="COM_KTBTRACKER_FIELD_PRE_TEST_PLACEHOLDER"
-			default="@GOAL_PRE_TEST@"
+			default="1"
 			class="inputbox"
 			size="20"
 			filter="intval">
@@ -354,7 +354,7 @@
 			label="COM_KTBTRACKER_FIELD_ASSIST_TESTING_LABEL"
 			description="COM_KTBTRACKER_FIELD_ASSIST_TESTING_DESC"
 			hint="COM_KTBTRACKER_FIELD_ASSIST_TESTING_PLACEHOLDER"
-			default="@GOAL_ASSIST_TESTING@"
+			default="3"
 			class="inputbox"
 			size="20"
 			filter="intval">
@@ -365,7 +365,7 @@
 			label="COM_KTBTRACKER_FIELD_SPECIAL_EVENTS_LABEL"
 			description="COM_KTBTRACKER_FIELD_SPECIAL_EVENTS_DESC"
 			hint="COM_KTBTRACKER_FIELD_SPECIAL_EVENTS_PLACEHOLDER"
-			default="@GOAL_SPECIAL_EVENTS@"
+			default="2"
 			class="inputbox"
 			size="20"
 			filter="intval">
@@ -376,7 +376,7 @@
 			label="COM_KTBTRACKER_FIELD_VIDEO_TRNG_LABEL"
 			description="COM_KTBTRACKER_FIELD_VIDEO_TRNG_DESC"
 			hint="COM_KTBTRACKER_FIELD_VIDEO_TRNG_PLACEHOLDER"
-			default="@GOAL_VIDEO_TRNG@"
+			default="4"
 			class="inputbox"
 			size="20"
 			filter="intval">
@@ -387,7 +387,7 @@
 			label="COM_KTBTRACKER_FIELD_LEAD_SEMINAR_LABEL"
 			description="COM_KTBTRACKER_FIELD_LEAD_SEMINAR_DESC"
 			hint="COM_KTBTRACKER_FIELD_LEAD_SEMINAR_PLACEHOLDER"
-			default="@GOAL_LEAD_SEMINAR@"
+			default="2"
 			class="inputbox"
 			size="20"
 			filter="intval">

@@ -3,7 +3,7 @@
  * @package		Joomla.Administrator
  * @subpackage 	com_ktbtracker
  * 
- * @copyright	Copyright (C) 2012-@COPYR_YEAR@ David Uczen Photography, Inc. All Rights Reserved.
+ * @copyright	Copyright (C) 2012-2017 David Uczen Photography, Inc. All Rights Reserved.
  * @license		Licensed Materials - Property of David Uczen Photography, Inc.; see LICENSE.txt
  * 
  * $Id$
@@ -549,7 +549,7 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 		}
 		
 		// Adjust the week to the "cycle week" start day
-		$thisWeek = strtotime('+' . $weekStart . ' days', $thisWeek);
+		//$thisWeek = strtotime('+' . $weekStart . ' days', $thisWeek);
 		
 		dump(date('Y-m-d', $thisWeek), "KTBTrackerHelper::getThisWeek");
 		return $thisWeek;
@@ -814,15 +814,17 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	
 			$cont_totals = $db->loadObject();
 				
-			// Carry over the continue cycle values (up to the max).
-			$goals = self::getCycleRequirements($cont_cycle);
-			foreach (get_object_vars($totals) as $key => $value)
-			{
-				if (($goals[$key]->access == 0 || $goals[$key]->access == $candidate->access) && $goals[$key]->tract <= $candidate->tract)
-				{
-					$totals->$key += min($cont_totals->$key, ($goals[$key]->requirement * $goals[$key]->carryover_factor));
-				}
-			}
+            // Carry over the continue cycle values (up to the max).
+            $goals = self::getCycleGoalSet($candidate);
+            foreach (get_object_vars($totals) as $key => $value)
+            {
+                if (in_array($key, self::getPhysicalRequirements($cycle))) {
+                    $totals->$key += min($cont_totals->$key, ($goals->$key * 0.50));
+                }
+                if (in_array($key, self::getClassRequirements($cycle))) {
+                    $totals->$key += min($cont_totals->$key, ($goals->$key * 0.33));
+                }
+            }
 	
 		}
 	
