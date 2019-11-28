@@ -9,7 +9,7 @@
   <properties>
   	<timestamp>${maven.build.timestamp}</timestamp>
   	<maven.build.timestamp.format>yyyyMMdd_HHmm</maven.build.timestamp.format>
-  	<peojwxt.build.sourceEncoding>UTF-8</peojwxt.build.sourceEncoding>
+  	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   	<revision>.${timestamp}</revision>
   	<DATE>${timestamp}</DATE>
   </properties>
