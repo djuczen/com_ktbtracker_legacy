@@ -12,6 +12,7 @@ defined('JPATH_PLATFORM') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\MVC\View\HtmlView;
+use Joomla\CMS\Router\Route;
 
 
 /**
@@ -19,15 +20,9 @@ use Joomla\CMS\MVC\View\HtmlView;
  *
  * @since	1.0.0
  */
-class KTBTrackerViewCandidates extends HtmlView
+class KTBTrackerViewKTBTracker extends HtmlView
 {
-	protected $items;
-	
-	protected $pagination;
-	
-	protected $state;
-	
-	
+ 
 	/**
 	 * Execute and display a template script.
 	 *
@@ -40,26 +35,14 @@ class KTBTrackerViewCandidates extends HtmlView
 	 */
 	public function display($tpl = null)
 	{	
-		$this->items		 = $this->get('Items');
-		$this->pagination	 = $this->get('Pagination');
-		$this->state		 = $this->get('State');
-		
-		$this->cycle		 = KTBTrackerHelper::getCycle($this->items[0]->cycleid);
-		
-		// Check for errors.
-		if (count($errors = $this->get('Errors'))) 
-		{
-			Factory::getApplication()->enqueueMessage(implode("\n", $errors), 'error');
-			return false;
-		}
-		
-		// Include any component stylesheets/scripts ...
+        // Include any component stylesheets/scripts ...
+		$document = Factory::getDocument();
 		HTMLHelper::script('com_ktbtracker/bootstrap-material-design.min.js', array('relative' => true), array());
         HTMLHelper::stylesheet('com_ktbtracker/bootstrap-material-design.min.css', array('relative' => true), array());
         HTMLHelper::stylesheet('https://fonts.googleapis.com/icon?family=Material+Icons');
 
-			
-		parent::display($tpl);
-	}
-	
+        parent::display($tpl);
+    }
 }
+
+// Pure PHP - no closing required

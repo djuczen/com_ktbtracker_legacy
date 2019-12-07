@@ -10,9 +10,22 @@
 		<fileSet>
 			<directory>${project.basedir}/src/main/php</directory>
 			<outputDirectory>/</outputDirectory>
+			<excludes>
+				<exclude>/media/images/**</exclude>
+			</excludes>
 			<directoryMode>775</directoryMode>
 			<fileMode>644</fileMode>
 			<filtered>true</filtered>
+		</fileSet>
+		<fileSet>
+			<directory>${project.basedir}/src/main/php</directory>
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>/media/images/**</include>
+			</includes>
+			<directoryMode>775</directoryMode>
+			<fileMode>644</fileMode>
+			<filtered>false</filtered>
 		</fileSet>
 	</fileSets>
 </assembly>

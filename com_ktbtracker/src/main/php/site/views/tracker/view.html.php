@@ -1,15 +1,17 @@
 <?php
 /**
- * @package		Joomla.Site
+ * @package		Joomla.Component
  * @subpackage 	com_ktbtracker
  * 
  * @copyright	Copyright (C) 2012-${COPYR_YEAR} David Uczen Photography, Inc. All Rights Reserved.
  * @license		Licensed Materials - Property of David Uczen Photography, Inc.; see LICENSE.txt
- * 
- * $Id$
  */
 
 defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\MVC\View\HtmlView;
 
 
 /**
@@ -17,7 +19,7 @@ defined('JPATH_PLATFORM') or die;
  * 
  * @since	1.0.0
  */
-class KTBTrackerViewTracker extends JViewLegacy
+class KTBTrackerViewTracker extends HtmlView
 {
 	/** @var	JForm	form */
 	protected $form = null;
@@ -31,7 +33,7 @@ class KTBTrackerViewTracker extends JViewLegacy
 	 */
 	function display($tpl = null)
 	{
-		$app		= JFactory::getApplication();
+		$application = Factory::getApplication();
 		
 		// Assign data to the view
 		$this->state	= $this->get('State'); dump($this->state, "State");
@@ -43,11 +45,17 @@ class KTBTrackerViewTracker extends JViewLegacy
 		$this->stats    = $this->get('Statistics');
 			
 		// Check for errors.
-		if (count($errors = $this->get('Errors'))) {
-			$app->enqueueMessage(implode('<br />', $errors), 'error');
+		if (count($errors = $this->get('Errors'))) 
+		{
+			$application->enqueueMessage(implode('<br />', $errors), 'error');
 			return false;
 		}
 			
+		// Include any component stylesheets/scripts ...
+		$document = Factory::getDocument();
+		HTMLHelper::script('com_ktbtracker/material.min.js', array('relative' => true), array());
+		HTMLHelper::stylesheet('com_ktbtracker/material.min.css', array('relative' => true), array());
+		
 		// Display the view
 		parent::display($tpl);
 	}
@@ -61,7 +69,7 @@ class KTBTrackerViewTracker extends JViewLegacy
 	 */
 	protected function addToolBar()
 	{
-		$input = JFactory::getApplication()->input;
+		$input = Factory::getApplication()->input;
 		
 		// Hide the Joomla Administratior Maine Menu
 		$input->set('hidemainmenu', true);

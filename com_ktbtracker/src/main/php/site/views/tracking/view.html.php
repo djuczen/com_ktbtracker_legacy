@@ -1,15 +1,17 @@
 <?php
 /**
- * @package		Joomla.Site
+ * @package		Joomla.Component
  * @subpackage 	com_ktbtracker
  * 
  * @copyright	Copyright (C) 2012-${COPYR_YEAR} David Uczen Photography, Inc. All Rights Reserved.
  * @license		Licensed Materials - Property of David Uczen Photography, Inc.; see LICENSE.txt
- * 
- * $Id$
  */
 
 defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\MVC\View\HtmlView;
+use Joomla\CMS\Router\Route;
 
 
 /**
@@ -17,7 +19,7 @@ defined('JPATH_PLATFORM') or die;
  *
  * @since	1.0.0
  */
-class KTBTrackerViewTracking extends JViewLegacy
+class KTBTrackerViewTracking extends HtmlView
 {
 	protected $items;
 	
@@ -47,18 +49,24 @@ class KTBTrackerViewTracking extends JViewLegacy
 		$this->stats         = $this->get('Statistics');
 		
 		// Check for errors.
-		if (count($errors = $this->get('Errors'))) {
-			JFactory::getApplication()->enqueueMessage(implode("\n", $errors), 'error');
+		if (count($errors = $this->get('Errors'))) 
+		{
+			Factory::getApplication()->enqueueMessage(implode("\n", $errors), 'error');
 			return false;
 		}
 		
 		// Determine previous/next week links
 		$baseURI = 'index.php?option=com_ktbtracker&view=tracking&canid='.(int) $this->candidate->id;
-		$this->prevLink = JRoute::_($baseURI . '&trackingDate=' .
+		$this->prevLink = Route::_($baseURI . '&trackingDate=' .
 		    KTBTrackerHelper::getPrevWeekDate($this->items[3]->tracking_date), false);
-		$this->nextLink = JRoute::_($baseURI . '&trackingDate=' .
+		$this->nextLink = Route::_($baseURI . '&trackingDate=' .
 		    KTBTrackerHelper::getNextWeekDate($this->items[3]->tracking_date), false);
-		
+
+		// Include any component stylesheets/scripts ...
+		$document = Factory::getDocument();
+		$document->addScript('com_ktbtracker/material.min.js');
+		$document->addStyleSheet('com_ktbtracker/material.min.css');
+
 		parent::display($tpl);
 	}
 	

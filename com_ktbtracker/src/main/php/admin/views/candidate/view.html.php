@@ -12,6 +12,7 @@
 defined('JPATH_PLATFORM') or die;
 
 
+
 /**
  * KTBTracker component HTML view for candidate forms (Administration). 
  * 

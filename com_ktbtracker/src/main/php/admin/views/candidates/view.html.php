@@ -11,13 +11,18 @@
 
 defined('JPATH_PLATFORM') or die;
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\MVC\View\HtmlView;
+use Joomla\CMS\Router\Route;
+
 
 /**
  * KTBTracker component HTML view for candidate lists (Administration).
  *
  * @since	1.0.0
  */
-class KTBTrackerViewCandidates extends JViewLegacy
+class KTBTrackerViewCandidates extends HtmlView
 {
  	/**
  	 * Display the the HTML list of candidates.
@@ -30,7 +35,7 @@ class KTBTrackerViewCandidates extends JViewLegacy
  	 */
  	function display($tpl = null)
  	{
- 		$app		= JFactory::getApplication();
+ 		$app		= Factory::getApplication();
  		
  		// Assign data to the view
  		$this->state		= $this->get('State');
@@ -52,8 +57,10 @@ class KTBTrackerViewCandidates extends JViewLegacy
  			return false;
  		}
  		
- 		JHtml::stylesheet('https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css');
- 		JHtml::stylesheet('com_ktbtracker/ktbtracker.css', array(), true);
+        // Include any component stylesheets/scripts ...
+		HTMLHelper::script('com_ktbtracker/bootstrap-material-design.min.js', array('relative' => true), array());
+        HTMLHelper::stylesheet('com_ktbtracker/bootstrap-material-design.min.css', array('relative' => true), array());
+        HTMLHelper::stylesheet('https://fonts.googleapis.com/icon?family=Material+Icons');
  		
  		// Display the view
  		parent::display($tpl);
@@ -69,7 +76,7 @@ class KTBTrackerViewCandidates extends JViewLegacy
  	protected function addToolBar()
  	{
  		$canDo = KTBTrackerHelper::getActions();
- 		$user = JFactory::getUser();
+ 		$user = Factory::getUser();
  		
  		// Get the toolbar object instance
  		$bar = JToolbar::getInstance('toolbar');
