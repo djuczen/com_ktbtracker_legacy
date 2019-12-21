@@ -11,15 +11,20 @@
 
 defined('JPATH_PLATFORM') or die;
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Router\Route;
 
-JHtml::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_ktbtracker/helpers/html');
+
+HTMLHelper::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_ktbtracker/helpers/html');
 
 KTBTrackerHelper::loadBootstrap();
-JHtml::_('behavior.multiselect');
-JHtml::_('formbehavior.chosen', 'select');
+HTMLHelper::_('behavior.multiselect');
+HTMLHelper::_('formbehavior.chosen', 'select');
 
 
-$user			= JFactory::getUser();
+$user			= Factory::getUser();
 $userId			= $user->id;
 
 dump($this->stats, 'stats');
@@ -38,77 +43,79 @@ dump(KTBTrackerHelper::getWeekDays());
 
 $stats = $this->stats;
 
+$icons = array(
+    'miles'         => 'com_ktbtracker/noun_run_2404347.png',
+    'pushups'       => 'com_ktbtracker/noun_push up_660576.png',
+    'situps'        => 'com_ktbtracker/noun_Exercise Partner_2401356.png',
+    'burpees'       => 'com_ktbtracker/noun_squatting_77784.png',
+    'kicks'         => 'com_ktbtracker/noun_Kicking_1926293.png',
+    'poomsae'       => 'com_ktbtracker/noun_Karate_2799191.png',
+    'self_defense'  => 'com_ktbtracker/noun_fighter_642314.png',
+    'sparring'      => 'com_ktbtracker/noun_taekwondo_655105.png',
+    'jumps'         => 'com_ktbtracker/noun_skipping_637493.png',
+    'pullups'       => 'com_ktbtracker/noun_Pull Up Bar_659117.png',
+    'rolls_falls'   => 'com_ktbtracker/noun_Gymnastic Beam_655095.png',
+    'class_saturday' => 'com_ktbtracker/noun_Class_2620898.png',
+    'class_weekday' => 'com_ktbtracker/noun_Class_2620898.png',
+    'class_sparring' => 'com_ktbtracker/noun_Class_2620898.png',
+    'class_pmaa'    => 'com_ktbtracker/noun_Class_2620898.png',
+    'class_masterq' => 'com_ktbtracker/noun_Class_2620898.png',
+    'class_dreamteam' => 'com_ktbtracker/noun_Class_2620898.png',
+    'class_hyperpro' => 'com_ktbtracker/noun_Class_2620898.png',
+    'meditation'    => 'com_ktbtracker/noun_meditate_127690.png',
+    'raok'          => 'com_ktbtracker/noun_help_1682050.png',
+    'mentor'        => 'com_ktbtracker/noun_Mentor_14634.png',
+    'mentee'        => 'com_ktbtracker/noun_Mentor_14634.png',
+    'leadership'    => 'com_ktbtracker/noun_Class_2509734.png',
+    'leadership2'   => 'com_ktbtracker/noun_Class_2509734.png',
+    'journals'      => 'com_ktbtracker/noun_journal_1835002.png',
+    
+);
 ?>
-<form action="<?php echo JRoute::_('index.php?option=com_ktbtracker'); ?>" method="post" id="adminForm" name="adminForm">
-	<div id="j-main-container">
-		<div class="center container">
-			<div class="center row">
-				<div class="col-xs-2">
-					<i class="fa fa-chevron-left"></i>
-				</div>
-				<div class="col-xs-8">
-				<?php if (!empty($stats->candidate)) : ?>
-					<span class="boxed">
-						<span style="width: 1em; word-wrap: break-word; letter-spacing: 1em;">DAY</span>
-						<span><?php echo JHtml::_('ktbtracker.formatted', $stats->interval->day); ?></span>
-						<span>$stats->cycle->title</span>
-					</span>
-				<?php else : ?>
-					<span class="boxed">
-						<span style="width: 1em; word-wrap: break-word; letter-spacing: 1em;">LIFETIME</span>
-					</span>
-				<?php endif; ?>
-				</div>
-				<div class="col-xs-2">
-					<i class="fa fa-chevron-right"></i>
+<div class="fluid-container">
+    <form action="<?php echo Route::_('index.php?option=com_ktbtracker'); ?>" method="post" id="adminForm" name="adminForm">
+<?php 
+    foreach ($stats->requirements as $i => $requirement): 
+        $tracked = $stats->tracking->$requirement; 
+        $progress_actual = min(max($stats->progress->$requirement, 0.0), 1.0) * 100.0;
+        $progress_width = (int) $progress_actual;
+        $icon_file = 'com_ktbtracker/noun_check list_2899842.png';
+        if (substr($requirement, 0, 4) == 'class') $icon_file = 'com_ktbtracker/noun_Class_2620898.png';
+        if (substr($requirement, 0, 9) == 'leadership') $icon_file = 'com_ktbtracker/noun_Class_2509734.png';
+        if (in_array($requirement, $icons)) $icon_file = $icons[$requirement];
+        if ($i % 4 == 0)
+        {
+            if ($i > 0) echo "        </div>";
+            echo "        <div class=\"row\">";
+        } ?>
+			<div class="col-6 col-md-4 col-lg-3 p-1">
+				<div class="card">
+					<div class="card-body">
+						<div class="row">
+							<div class="col-4 text center">
+								<?php echo HTMLHelper::_('image', $icons[$requirement], $requirement, array('height' => '48', 'width' => '48'), true); ?>
+							</div>
+							<div class="col-8">
+        						<h5 class="card-title display-1"><?php echo HTMLHelper::_('ktbtracker.formatted', $tracked, null, 0); ?></h5>
+        						<h6 class="card-subtitle"><?php echo Text::_('COM_KTBTRACKER_FIELD_' . strtoupper($requirement) . '_SHORT'); ?></h6>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+        						<div class="card-text progress">
+        							<div class="progress-bar" role="progressbar" style="width: <?php echo $progress_width; ?>"
+        								aria-valuenow="<?php echo $progress_width; ?>" aria-valuemin="0" aria-valuemax="100"
+        								title="<?php echo $progress_actual; ?>%"></div>
+        						</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
+<?php endforeach; ?>
 		</div>
-		<div class="center container">
-			<h3><?php echo JText::_('COM_KTBTRACKER_FIELDSET_PHYSICAL_LABEL'); ?></h3>
-			<div class="center row-fluid">
-			<?php foreach (KTBTrackerHelper::getPhysicalRequirements() as $requirement => $goal) : ?>
-				<?php if (empty($goal)) { continue; } ?>
-				<div class="center col-xs-6 col-md-3 col-lg-2">
-					<div id="<?php echo $requirement; ?>"></div>
-					<span class="progress-label"><?php echo JHtml::_('ktbtracker.formatted', $stats->tracking->$requirement, null, 0); ?><br/>
-					<small><?php echo JText::_('COM_KTBTRACKER_FIELD_' . strtoupper($requirement) . '_SHORT'); ?></small></span>
-					<?php echo JHtml::_('progressbar.circle', '#' . $requirement, JHtml::_('ktbtracker.formatted', $goal), $stats->progress->$requirement); ?>
-				</div>
-			<?php endforeach; ?>
-			</div>
-		</div>
-		<div class="center container">
-			<h3><?php echo JText::_('COM_KTBTRACKER_FIELDSET_CLASSES_LABEL'); ?></h3>
-			<div class="center row-fluid">
-			<?php foreach (KTBTrackerHelper::getClassRequirements() as $requirement => $goal) : ?>
-				<div class="center col-xs-6 col-md-3 col-lg-2">
-					<div id="<?php echo $requirement; ?>"></div>
-					<span class="progress-label"><?php echo JHtml::_('ktbtracker.formatted', $stats->tracking->$requirement, null, 0); ?><br/>
-					<small><?php echo JText::_('COM_KTBTRACKER_FIELD_' . strtoupper($requirement) . '_SHORT'); ?></small></span>
-				</div>
-				<?php echo JHtml::_('progressbar.circle', '#' . $requirement, JHtml::_('ktbtracker.formatted', $goal), $stats->progress->$requirement); ?>
-			<?php endforeach; ?>
-			</div>
-		</div>
-		<div class="center container">		
-			<h3><?php echo JText::_('COM_KTBTRACKER_FIELDSET_OTHER_LABEL'); ?></h3>
-			<div class="center row-fluid">
-			<?php foreach (KTBTrackerHelper::getOtherRequirements() as $requirement => $goal) : ?>
-				<div class="center col-xs-6 col-md-3 col-lg-2">
-					<div id="<?php echo $requirement; ?>"></div>
-					<span class="progress-label"><?php echo JHtml::_('ktbtracker.formatted', $stats->tracking->$requirement, null, 0); ?><br/>
-					<small><?php echo JText::_('COM_KTBTRACKER_FIELD_' . strtoupper($requirement) . '_SHORT'); ?></small></span>
-				</div>
-				<?php echo JHtml::_('progressbar.circle', '#' . $requirement, JHtml::_('ktbtracker.formatted', $goal), $stats->progress->$requirement); ?>
-			<?php endforeach; ?>
-			</div>
-		</div>
-		<div class="container">				
-			<h1>Hi, I'm a dashboard!</h1>
-		</div>
-	</div>
-	<input type="hidden" name="task" value=""/>
-	<input type="hidden" name="boxchecked" value="0"/>
-	<?php echo JHtml::_('form.token'); ?>
-</form>
+    	<input type="hidden" name="task" value=""/>
+    	<input type="hidden" name="boxchecked" value="0"/>
+    	<?php echo HTMLHelper::_('form.token'); ?>
+    </form>
+</div>

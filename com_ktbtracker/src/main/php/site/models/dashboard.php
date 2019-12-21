@@ -1,15 +1,18 @@
 <?php
 /**
- * @package		Joomla.Site
+ * @package		Joomla.Component
  * @subpackage 	com_ktbtracker
  * 
  * @copyright	Copyright (C) 2012-${COPYR_YEAR} David Uczen Photography, Inc. All Rights Reserved.
  * @license		Licensed Materials - Property of David Uczen Photography, Inc.; see LICENSE.txt
- * 
- * $Id$
  */
 
 defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\MVC\Model\AdminModel;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 
 
 /**
@@ -18,16 +21,16 @@ defined('JPATH_PLATFORM') or die;
  * @since	3.0.0
 */
 
-class KTBTrackerModelDashboard extends JModelLegacy
+class KTBTrackerModelDashboard extends BaseDatabaseModel
 {
 	/**
-	 * @var		JModelAdmin	An instance of the KTBTrackerModelCandidate.
+	 * @var		AdminModel	An instance of the KTBTrackerModelCandidate.
 	 * 
 	 */
 	protected $candidate_model;
 	
 	/**
-	 * @var		JModelAdmin	An instance of the KTBTrackerModelCycle.
+	 * @var		AdminModel	An instance of the KTBTrackerModelCycle.
 	 *
 	 */
 	protected $cycle_model;
@@ -51,11 +54,12 @@ class KTBTrackerModelDashboard extends JModelLegacy
 	protected function populateState()
 	{
 		// Initialise variables.
-		$app = JFactory::getApplication();
-		$session = JFactory::getSession();
+		$app = Factory::getApplication();
+		$session = Factory::getSession();
 
 		// Adjust the context to support modal layouts.
-		if ($layout = $app->input->getVar('layout')) {
+		if ($layout = $app->input->getVar('layout'))
+		{
 			$this->context .= '.' . $layout;
 		}
 
@@ -79,13 +83,14 @@ class KTBTrackerModelDashboard extends JModelLegacy
 	/**
 	 * A simple proxy for instantiating the KTBTrackerModelCandidate class.
 	 *
-	 * @return	JModelAdmin	the result from JModelAdmin::getInstance()
+	 * @return	AdminModel	the result from JModelAdmin::getInstance()
 	 */
 	protected function getCandidateModel()
 	{
-		if (empty($this->candidate_model)) {
-			JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_ktbtracker/models');
-			$this->candidate_model = JModelAdmin::getInstance('Candidate', 'KTBTrackerModel', array('ignore_request' => true));
+		if (empty($this->candidate_model))
+		{
+			BaseDatabaseModel::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_ktbtracker/models');
+			$this->candidate_model = AdminModel::getInstance('Candidate', 'KTBTrackerModel', array('ignore_request' => true));
 		}
 		return $this->candidate_model;
 	}
@@ -93,13 +98,14 @@ class KTBTrackerModelDashboard extends JModelLegacy
 	/**
 	 * A simple proxy for instantiating the KTBTrackerModleCycle class.
 	 *
-	 * @return	JModelAdmin	the result from JModelAdmin::getInstance()
+	 * @return	AdminModel	the result from JModelAdmin::getInstance()
 	 */
 	protected function getCycleModel()
 	{
-		if (empty($this->cycle_model)) {
-			JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_ktbtracker/models');
-			$this->cycle_model = JModelAdmin::getInstance('Cycle', 'KTBTrackerModel', array('ignore_request' => true));
+		if (empty($this->cycle_model))
+		{
+			BaseDatabaseModel::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_ktbtracker/models');
+			$this->cycle_model = AdminModel::getInstance('Cycle', 'KTBTrackerModel', array('ignore_request' => true));
 		}
 		return $this->cycle_model;
 	}
@@ -114,7 +120,7 @@ class KTBTrackerModelDashboard extends JModelLegacy
 		$trackingDate = $this->getState('tracking.date', 'now');
 		$trackingUser = $this->getState('tracking.user', null);
 		
-		$user = JFactory::getUser($trackingUser);
+		$user = Factory::getUser($trackingUser);
 		$cycle = null;
 		$interval = null;
 		
@@ -122,25 +128,32 @@ class KTBTrackerModelDashboard extends JModelLegacy
 		
 		
 		// Attempt to get a candiate if one not presented
-		if (empty($candidate)) {
+		if (empty($candidate))
+		{
 			$canId = $this->getState('tracking.candidate', 0);
 			
-			if (!empty($canId)) {
+			if (!empty($canId))
+			{
 				$candidate = $this->getCandidateModel()->getItem($canId);
-			} else {
+			}
+			else
+			{
 				$candidate = KTBTrackerHelper::getTrackingUser();
 			}
 		}
 		
 		// If presented with a candidate, we know the user and the cycle
-		if (!empty($candidate)) {
-			$user = JFactory::getUser($candidate->userid);
+		if (!empty($candidate))
+		{
+			$user = Factory::getUser($candidate->userid);
 			$cycle = $this->getCycleModel()->getItem($candidate->cycleid);
 		}
 		
 		// Attempt to get a cycle if not presented
-		if (empty($cycle)) {
-			if (is_null($cycleId)) {
+		if (empty($cycle))
+		{
+			if (is_null($cycleId))
+			{
 				$cycleId = $this->getState('tracking.cycle', KTBTrackerHelper::getCycleId());
 			}
 			
@@ -148,7 +161,8 @@ class KTBTrackerModelDashboard extends JModelLegacy
 		}
 		
 		// If presented with a cycle, determine the interval data
-		if (!empty($cycle)) {
+		if (!empty($cycle))
+		{
 			$interval = KTBTrackerHelper::getCycleInterval($cycle, $trackingDate, $candidate);
 		}
 		
@@ -157,20 +171,22 @@ class KTBTrackerModelDashboard extends JModelLegacy
 		$stats->interval = $interval;
 		$stats->requirements = KTBTrackerHelper::getCycleRequirements($cycle);
 		
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 		$query = $db->getQuery(true);
 		
 		// -------------------------------------------------------------------
 		// Calculate the requirements tracking
 		// -------------------------------------------------------------------
 		
-		foreach ($stats->requirements as $requirement => $goal) {
+		foreach ($stats->requirements as $requirement)
+		{
 			if ($requirement == 'journals') continue; // 'journals' is calculated below
 			$query->select('SUM(' . $db->qn('a.' . $requirement) . ') AS ' . $db->qn($requirement));
 		}
 		$query->from($db->qn('#__ktbtracker_tracking', 'a'));
 		$query->where($db->qn('userid') . ' = ' . (int) $user->id);
-		if (!empty($interval)) {
+		if (!empty($interval))
+		{
 			$query->where($db->qn('a.tracking_date') . ' BETWEEN ' .
 					'  DATE(' . $db->q(substr($interval->cycle_start, 0, 10)) . ') ' .
 					' AND ' .
@@ -187,10 +203,11 @@ class KTBTrackerModelDashboard extends JModelLegacy
 		
 		// Select the required fields from the table.
 		$query = $db->getQuery(true);
-		$query->select('DATE(CONVERT_TZ(created,\'+00:00\',\'' . JHtml::date('now', 'P') . '\')), COUNT(*)');
+		$query->select('DATE(CONVERT_TZ(created,\'+00:00\',\'' . HTMLHelper::date('now', 'P') . '\')), COUNT(*)');
 		$query->from($db->qn('#__easyblog_post'));
 		$query->where($db->qn('created_by') . ' = ' . (int) $user->id);
-		if (!empty($interval)) {
+		if (!empty($interval))
+		{
 			$query->where($db->qn('created') . ' BETWEEN '.
 					$db->q($interval->cycle_start) . 
 					' AND ' . 
@@ -211,12 +228,14 @@ class KTBTrackerModelDashboard extends JModelLegacy
 		
 		$progress = new stdClass();
 		
-		foreach ($stats->requirements as $requirement => $goal) {
+		foreach ($stats->requirements as $requirement => $goal)
+		{
 			// Assume the goal has NOT been met (or not tracked)
 			$progress->$requirement = 0.0;
 			
 			// Determine the total progress towards the goal
-			if (!empty($goal) && !empty($stats->tracking->$requirement)) {
+			if (!empty($goal) && !empty($stats->tracking->$requirement))
+			{
 				$progress->$requirement = $stats->tracking->$requirement / $goal;
 			}
 			

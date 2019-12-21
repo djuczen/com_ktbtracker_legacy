@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
- * @package		Joomla.Administrator
+ * @package		Joomla.Component
  * @subpackage 	com_ktbtracker
  * 
  * @copyright	Copyright (C) 2012-${COPYR_YEAR} David Uczen Photography, Inc. All Rights Reserved.
  * @license		Licensed Materials - Property of David Uczen Photography, Inc.; see LICENSE.txt
- *
- * $Id$
 -->
 <access component="com_ktbtracker">
 	<section name="component">

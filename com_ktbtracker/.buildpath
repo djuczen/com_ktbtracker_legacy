@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <buildpath>
 	<buildpathentry kind="src" path=""/>
-	<buildpathentry external="true" kind="lib" path="C:/wamp64/www/ktb/includes"/>
+	<buildpathentry external="true" kind="lib" path="C:/wamp64/www/ktbtracker/includes"/>
+	<buildpathentry external="true" kind="lib" path="C:/wamp64/www/ktbtracker/components/com_jsn/helpers"/>
 	<buildpathentry kind="con" path="org.eclipse.php.core.LANGUAGE"/>
-	<buildpathentry external="true" kind="lib" path="C:/wamp64/www/ktb/components/com_jsn/helpers"/>
-	<buildpathentry external="true" kind="lib" path="C:/wamp64/www/ktb/libraries"/>
-	<buildpathentry external="true" kind="lib" path="C:/wamp64/www/ktb/administrator/includes"/>
-	<buildpathentry external="true" kind="lib" path="C:/wamp64/www/ktb/components/com_community/libraries"/>
+	<buildpathentry external="true" kind="lib" path="C:/wamp64/www/ktbtracker/libraries"/>
 </buildpath>

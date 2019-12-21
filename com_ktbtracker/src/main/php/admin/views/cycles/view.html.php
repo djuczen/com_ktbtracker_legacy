@@ -7,6 +7,12 @@
  * @license		Licensed Materials - Property of David Uczen Photography, Inc.; see LICENSE.txt
  */
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\View\HtmlView;
+use Joomla\CMS\Toolbar\Toolbar;
+use Joomla\CMS\Toolbar\ToolbarHelper;
+
 defined('JPATH_PLATFORM') or die;
 
 
@@ -15,7 +21,7 @@ defined('JPATH_PLATFORM') or die;
  * 
  * @since	1.0.0
  */
- class KTBTrackerViewCycles extends JViewLegacy
+ class KTBTrackerViewCycles extends HtmlView
  {
  	/**
  	 * Display the the HTML list of cycles
@@ -28,7 +34,7 @@ defined('JPATH_PLATFORM') or die;
  	 */
  	function display($tpl = null)
  	{
- 		$app		= JFactory::getApplication();
+ 		$app		= Factory::getApplication();
  		
  		// Assign data to the view
  		$this->state		= $this->get('State');
@@ -38,14 +44,16 @@ defined('JPATH_PLATFORM') or die;
  		$this->activeFilters = $this->get('ActiveFilters');
  		
  		// For non-modal views, add a sidebar and toolbar
- 	 	if ($this->getLayout() !== 'modal') {
+ 	 	if ($this->getLayout() !== 'modal')
+ 	 	{
  			KTBTrackerHelper::addSubmenu('cycles');
  			$this->sidebar = JHtmlSidebar::render();
  			$this->addToolBar();
  		}
  		
  		// Check for errors.
- 		if (count($errors = $this->get('Errors'))) {
+ 		if (count($errors = $this->get('Errors')))
+ 		{
  			$app->enqueueMessage(implode('<br />', $errors), 'error');
  			return false;
  		}
@@ -64,31 +72,19 @@ defined('JPATH_PLATFORM') or die;
  	protected function addToolBar()
  	{
  		$canDo = KTBTrackerHelper::getActions();
- 		$user = JFactory::getUser();
+ 		$user = Factory::getUser();
  		
- 		// Get the toolbar object instance
- 		$bar = JToolbar::getInstance('toolbar');
+ 		ToolbarHelper::title(Text::_('COM_KTBTRACKER_MANAGER_CYCLES'), 'users');
  		
- 		JToolBarHelper::title(JText::_('COM_KTBTRACKER_MANAGER_CYCLES'), 'users');
+		ToolbarHelper::addNew('cycle.add');
+	
+		ToolbarHelper::editList('cycle.edit');
+		ToolbarHelper::checkin('cycles.checkin', 'JTOOLBAR_CHECKIN', true);
+		ToolbarHelper::deleteList('', 'cycles.delete');
  		
- 		if ($canDo->get('core.create')) {
- 			JToolBarHelper::addNew('cycle.add');
- 		}
- 		
- 		if ($canDo->get('core.edit')) {
- 			JToolBarHelper::editList('cycle.edit');
- 		}
- 		
- 		if ($user->authorise('core.admin', 'com_ktbtracker')) {
- 			JToolbarHelper::checkin('cycles.checkin', 'JTOOLBAR_CHECKIN', true);
- 		}
- 		
- 		if ($canDo->get('core.delete')) {
- 			JToolBarHelper::deleteList('', 'cycles.delete');
- 		}
- 		
- 		if ($user->authorise('core.admin', 'com_ktbtracker') || $user->authorise('core.options', 'com_ktbtracker')) {
- 			JToolBarHelper::preferences('com_ktbtracker');
+ 		if ($user->authorise('core.admin', 'com_ktbtracker') || $user->authorise('core.options', 'com_ktbtracker'))
+ 		{
+ 			ToolbarHelper::preferences('com_ktbtracker');
  		}
  	}
  }

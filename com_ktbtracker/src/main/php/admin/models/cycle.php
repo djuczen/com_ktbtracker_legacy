@@ -1,6 +1,6 @@
 <?php
 /**
- * @package		Joomla.Administrator
+ * @package		Joomla.Component
  * @subpackage 	com_ktbtracker
  * 
  * @copyright	Copyright (C) 2012-${COPYR_YEAR} David Uczen Photography, Inc. All Rights Reserved.
@@ -9,13 +9,18 @@
 
 defined('JPATH_PLATFORM') or die;
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Filter\OutputFilter;
+use Joomla\CMS\MVC\Model\AdminModel;
+use Joomla\CMS\Table\Table;
+
 
 /**
  * KTBTracker component model for cycle forms (Administration).
  * 
  * @since	1.0.0
  */
- class KTBTrackerModelCycle extends JModelAdmin
+ class KTBTrackerModelCycle extends AdminModel
  {
  	/**
  	 * Method to get a JTable ojbect, load it if necessary.
@@ -24,13 +29,13 @@ defined('JPATH_PLATFORM') or die;
  	 * @param	string	$prefix	The class prefix (optional).
  	 * @param	array	$config	Configuration array for model (optiona).
  	 * 
- 	 * @return	JTable	A JTable object
+ 	 * @return	Table	A JTable object
  	 * 
  	 * @since	1.0.0
  	 */
  	public function getTable($type = 'Cycles', $prefix = 'KTBTrackerTable', $config = array())
  	{
- 		return JTable::getInstance($type, $prefix, $config);
+ 		return Table::getInstance($type, $prefix, $config);
  	}
  	
  	/**
@@ -45,21 +50,23 @@ defined('JPATH_PLATFORM') or die;
  	 */
  	public function getForm($data = array(), $loadData = true)
  	{
- 		$app = JFactory::getApplication();
- 		$user = JFactory::getUser();
+ 		$app = Factory::getApplication();
+ 		$user = Factory::getUser();
  		
  		$id = $app->input->get('id', 0);
  		
  		// Get the form
  		$form = $this->loadForm('com_ktbtracker.cycle', 'cycle', array('control' => 'jform', 'load_data' => $loadData));
  		
- 		if (empty($form)) {
+ 		if (empty($form))
+ 		{
  			return false;
  		}
  		
  		// Modify the form based on Edit State access
  		if ($id != 0 && (!$user->authorise('core.edit.state', 'com_ktbtracker.cycle.' . (int) $id))
- 				|| ($id == 0 && !$user->authorise('core.edit.state', 'com_ktbtracker'))) {
+ 				|| ($id == 0 && !$user->authorise('core.edit.state', 'com_ktbtracker')))
+ 		{
  			// Disable fields on display
  			$form->setFieldAttribute('published', 'disabled', 'true');
  			
@@ -79,16 +86,18 @@ defined('JPATH_PLATFORM') or die;
  	 */
  	protected function loadFormData()
  	{
- 		$app = JFactory::getApplication();
+ 		$app = Factory::getApplication();
  		
  		// Check the session for previously entered form data.
  		$data = $app->getUserState('com_ktbtracker.edit.cycle.data', array());
  		
- 		if (empty($data)) {
+ 		if (empty($data))
+ 		{
  			$data = $this->getItem();
  			
  			// Prime some default values for add...
- 			if ($this->getState('cycle.id') == 0) {
+ 			if ($this->getState('cycle.id') == 0)
+ 			{
  				$filters = (array) $app->getUserState('com_ktbtracker.cycles.filter');
  			}
  		}
@@ -99,7 +108,7 @@ defined('JPATH_PLATFORM') or die;
  	/**
  	 * Prepare and sanitise the table data prior to saving.
  	 *
- 	 * @param   JTable  $table  A reference to a JTable object.
+ 	 * @param   Table  $table  A reference to a JTable object.
  	 *
  	 * @return  void
  	 *
@@ -108,13 +117,16 @@ defined('JPATH_PLATFORM') or die;
  	protected function prepareTable($table)
  	{
  		// Generate the alias if empty
- 		if (in_array(JFactory::getApplication()->input->get('task'),array('apply', 'save', 'save2new')) && empty($table->id))
+ 		if (in_array(Factory::getApplication()->input->get('task'),array('apply', 'save', 'save2new')) && empty($table->id))
  		{
  			if (empty($table->alias)) {
- 				if (JFactory::getConfig()->get('unicodeslugs') == 1) {
- 					$table->alias = JFilterOutput::stringURLUnicodeSlug($table->title);
- 				} else {
- 					$table->alias = JFilterOutput::stringURLSafe($table->title);
+ 				if (Factory::getConfig()->get('unicodeslugs') == 1)
+ 				{
+ 					$table->alias = OutputFilter::stringURLUnicodeSlug($table->title);
+ 				}
+ 				else 
+ 				{
+ 					$table->alias = OutputFilter::stringURLSafe($table->title);
  				}
  			}
  		}
@@ -127,16 +139,21 @@ defined('JPATH_PLATFORM') or die;
  		//}
  		
  		// Provide created and modified values
- 	 	if (empty($table->id)) {
- 			if (empty($table->created_by)) {
- 				$table->created_by = JFactory::getUser()->id;
+ 	 	if (empty($table->id))
+ 	 	{
+ 			if (empty($table->created_by))
+ 			{
+ 				$table->created_by = Factory::getUser()->id;
  			}
- 			if (empty($table->created)) {
- 				$table->created = JFactory::getDate()->toSql();
+ 			if (empty($table->created))
+ 			{
+ 				$table->created = Factory::getDate()->toSql();
  			} 			
- 		} else {
- 			$table->modified_by = JFactory::getUser()->id;
- 			$table->modified = JFactory::getDate()->toSql();
+ 		}
+ 		else
+ 		{
+ 			$table->modified_by = Factory::getUser()->id;
+ 			$table->modified = Factory::getDate()->toSql();
  		}
  	}
  	
@@ -149,7 +166,7 @@ defined('JPATH_PLATFORM') or die;
  	 */
  	public function getCurrentCycle()
  	{
- 		$db = JFactory::getDbo();
+ 		$db = Factory::getDbo();
  		$query = $db->getQuery(true);
  	
  		$query->select('*');
@@ -171,18 +188,19 @@ defined('JPATH_PLATFORM') or die;
  	 * participated.
  	 * 
  	 * The array of cycle objects may be empty if no
- 	 * @param unknown $trackingUser
- 	 * @return mixed|NULL|unknown[]|mixed[]
+ 	 * @param mixed $trackingUser
+ 	 * @return mixed|NULL|mixed[]
  	 */
  	public function getCandidateCycles($trackingUser = null)
  	{
- 		if (empty($trackingUser)) {
- 			$trackingUser = JFactory::getApplication()->input->get('trackingUser', null);
+ 		if (empty($trackingUser))
+ 		{
+ 			$trackingUser = Factory::getApplication()->input->get('trackingUser', null);
  		}
  		
- 		$user = JFactory::getUser($trackingUser);
+ 		$user = Factory::getUser($trackingUser);
  		
- 		$db = JFactory::getDbo();
+ 		$db = Factory::getDbo();
  		$query = $db->getQuery(true);
  		
  		$query->select('*');

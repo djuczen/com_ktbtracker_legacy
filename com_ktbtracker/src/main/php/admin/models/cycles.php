@@ -9,6 +9,8 @@
 
 defined('JPATH_PLATFORM') or die;
 
+use Joomla\CMS\Factory;
+
 
 /**
  * KTBTracker component model for cycle lists (Administration)
@@ -93,7 +95,7 @@ defined('JPATH_PLATFORM') or die;
 	protected function getListQuery()
  	{
  		// Initialize variables
- 		$db		= JFactory::getDbo();
+ 		$db		= Factory::getDbo();
  		$query	= $db->getQuery(true);
  			
  		// Create the base select statement
@@ -102,9 +104,12 @@ defined('JPATH_PLATFORM') or die;
 
  		$search = $this->getState('filter.search');
  		if (!empty($search)) {
- 			if (stripos('id:', $search) === 0) {
+ 			if (stripos('id:', $search) === 0)
+ 			{
  				$query->where($db->qn('a.id') . ' = ' . (int) substr($search, 3));
- 			} else {
+ 			}
+ 			else
+ 			{
  				$search = $db->q('%' . str_replace(' ', '%', $db->escape(trim($search), true) . '%'));
  				$query->where('(a.title LIKE ' . $search . ' OR a.alias LIKE ' . $search . ')');
  			}

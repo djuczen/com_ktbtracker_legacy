@@ -11,6 +11,12 @@
 
 defined('JPATH_PLATFORM') or die;
 
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Model\AdminModel;
+use Joomla\CMS\User\UserHelper;
+use Joomla\CMS\Table\Table;
 use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
 
@@ -23,7 +29,7 @@ include_once JPATH_ROOT . '/components/com_jsn/helpers/helper.php';
  * 
  * @since	1.0.0
  */
-class KTBTrackerModelCandidate extends JModelAdmin
+class KTBTrackerModelCandidate extends AdminModel
 {
 	/**
 	 * Method to get a table object, load it if necessary.
@@ -32,13 +38,13 @@ class KTBTrackerModelCandidate extends JModelAdmin
 	 * @param 	string 	$prefix	  The class prefix. Optional.
 	 * @param 	array 	$options  Configuration array for model. Optional.
 	 *        	
-	 * @return 	JTable 	A JTable object
+	 * @return 	Table 	A JTable object
 	 *        
 	 * @since 	1.0.0
 	 */
 	public function getTable($type = 'Candidates', $prefix = 'KTBTrackerTable', $config = array())
 	{
-		return JTable::getInstance($type, $prefix, $config);
+		return Table::getInstance($type, $prefix, $config);
 	}
 	
 	/**
@@ -53,8 +59,8 @@ class KTBTrackerModelCandidate extends JModelAdmin
 	 */
 	public function getForm($data = array(), $loadData = true)
 	{
- 		$app = JFactory::getApplication();
- 		$user = JFactory::getUser();
+ 		$app = Factory::getApplication();
+ 		$user = Factory::getUser();
  		
  		$id = $app->input->get('id', 0);
 		
@@ -64,13 +70,15 @@ class KTBTrackerModelCandidate extends JModelAdmin
 				'load_data' => $loadData 
 		));
 		
-		if (empty($form)) {
+		if (empty($form))
+		{
 			return false;
 		}
 		
 		// Modify the form based on Edit State access controls.
 		if ($id != 0 && (!$user->authorise('core.edit.state', 'com_ktbtracker.candidate.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('core.edit.state', 'com_ktbtracker'))) {
+			|| ($id == 0 && !$user->authorise('core.edit.state', 'com_ktbtracker')))
+		{
 			// Disable fields for display.
 			$form->setFieldAttribute('userid', 'disabled', 'true');
 			$form->setFieldAttribute('cycleid', 'disabled', 'true');
@@ -96,10 +104,11 @@ class KTBTrackerModelCandidate extends JModelAdmin
 	protected function loadFormData() 
 	{
 		// Check the session for previously entered form data.
-		$data = JFactory::getApplication()->getUserState('com_ktbtracker.edit.' . $this->getName() . '.data', array());
+		$data = Factory::getApplication()->getUserState('com_ktbtracker.edit.' . $this->getName() . '.data', array());
 		
 		// Attempt to get the record from the database
-		if (empty($data)) {
+		if (empty($data))
+		{
 			$data = $this->getItem();
 		}
 		
@@ -118,7 +127,7 @@ class KTBTrackerModelCandidate extends JModelAdmin
 	public function getItem($pk = null) 
 	{
 		// Access the component parameters
-		$params = JComponentHelper::getParams('com_ktbtracker');
+		$params = ComponentHelper::getParams('com_ktbtracker');
 		
 		// Initialise variables.
 		$pk = (! empty($pk)) ? $pk : (int) $this->getState($this->getName() . '.id' );
@@ -129,7 +138,8 @@ class KTBTrackerModelCandidate extends JModelAdmin
 			$return = $table->load($pk);
 			
 			// Check for a table object error.
-			if ($return === false && $table->getError()) {
+			if ($return === false && $table->getError())
+			{
 				$this->setError($table->getError());
 				return false;
 			}
@@ -139,7 +149,8 @@ class KTBTrackerModelCandidate extends JModelAdmin
 		$properties = $table->getProperties(true);
 		$item = JArrayHelper::toObject($properties, 'JObject');
 		
-		if (property_exists($item, 'params')) {
+		if (property_exists($item, 'params'))
+		{
 			$registry = new Registry();
 			$registry->loadJSON($item->params);
 			$item->params = $registry->toArray();
@@ -154,7 +165,7 @@ class KTBTrackerModelCandidate extends JModelAdmin
  	/**
  	 * Prepare and sanitise the table data prior to saving.
  	 *
- 	 * @param   JTable  $table  A reference to a JTable object.
+ 	 * @param   Table  $table  A reference to a JTable object.
  	 *
  	 * @return  void
  	 *
@@ -163,16 +174,21 @@ class KTBTrackerModelCandidate extends JModelAdmin
  	protected function prepareTable($table)
  	{
  		// Provide created and modified values
- 	 	if (empty($table->id)) {
- 			if (empty($table->created_by)) {
- 				$table->created_by = JFactory::getUser()->id;
+ 	 	if (empty($table->id))
+ 	 	{
+ 			if (empty($table->created_by))
+ 			{
+ 				$table->created_by = Factory::getUser()->id;
  			}
- 			if (empty($this->created)) {
- 				$table->created = JFactory::getDate()->toSql();
+ 			if (empty($this->created))
+ 			{
+ 				$table->created = Factory::getDate()->toSql();
  			} 			
- 		} else {
- 			$table->modified_by = JFactory::getUser()->id;
- 			$table->modified = JFactory::getDate()->toSql();
+ 		}
+ 		else
+ 		{
+ 			$table->modified_by = Factory::getUser()->id;
+ 			$table->modified = Factory::getDate()->toSql();
  		}
  	}
  	
@@ -190,7 +206,7 @@ class KTBTrackerModelCandidate extends JModelAdmin
 		$pks = ArrayHelper::toInteger($pks);
 
 		if (empty($pks)) {
-			$this->setError(JText::_('JERROR_NO_ITEM_SELECTED'));
+			$this->setError(Text::_('JERROR_NO_ITEM_SELECTED'));
 
 			return false;
 		}
@@ -227,7 +243,8 @@ class KTBTrackerModelCandidate extends JModelAdmin
 	protected function getUserInfo(&$item) 
 	{
 		// Nothing to do if no record
-		if (empty($item)) {
+		if (empty($item))
+		{
 			return false;
 		}
 		
@@ -236,7 +253,7 @@ class KTBTrackerModelCandidate extends JModelAdmin
 		$item->username = 'nobody';
 		$item->email = 'nobody@email.com';
 		
-		$user = JFactory::getUser($item->userid);
+		$user = Factory::getUser($item->userid);
 		
 		// Augment with Joomla user data
 		$item->name = $user->name;
@@ -244,7 +261,7 @@ class KTBTrackerModelCandidate extends JModelAdmin
 		$item->email = $user->email;
 		
 		// Augment with user profile data
-		$item->profile = JUserHelper::getProfile($item->userid);
+		$item->profile = UserHelper::getProfile($item->userid);
 		
 		// Augment with Easy Profile data
 		$jsn_user = JsnHelper::getUser($item->userid);
@@ -253,7 +270,7 @@ class KTBTrackerModelCandidate extends JModelAdmin
 		$item->link = $jsn_user->getLink();
 		
 		// Get the tract (belt rank) name
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 		$query = $db->getQuery(true);
 		$query->select($db->qn('title'));
 		$query->from($db->qn('#__usergroups'));

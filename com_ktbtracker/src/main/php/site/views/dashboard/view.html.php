@@ -11,13 +11,17 @@
 
 defined('JPATH_PLATFORM') or die;
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\MVC\View\HtmlView;
+
 
 /**
  * KTBTracker component HTML view for main dashboard (Site).
  *
  * @since	1.0.0
  */
-class KTBTrackerViewDashboard extends JViewLegacy
+class KTBTrackerViewDashboard extends HtmlView
 {
  	/**
  	 * Display the the HTML dashboard.
@@ -30,7 +34,7 @@ class KTBTrackerViewDashboard extends JViewLegacy
  	 */
  	function display($tpl = null)
  	{
- 		$app		= JFactory::getApplication();
+ 		$app		= Factory::getApplication();
  		
  		// Assign data to the view
  		$this->state = $this->get('State');
@@ -43,6 +47,11 @@ class KTBTrackerViewDashboard extends JViewLegacy
  			$app->enqueueMessage(implode('<br />', $errors), 'error');
  			return false;
  		}
+ 		
+ 		// Include any component stylesheets/scripts ...
+ 		HTMLHelper::script('com_ktbtracker/bootstrap-material-design.min.js', array('relative' => true), array());
+ 		HTMLHelper::stylesheet('com_ktbtracker/bootstrap-material-design.min.css', array('relative' => true), array());
+ 		HTMLHelper::stylesheet('https://fonts.googleapis.com/icon?family=Material+Icons');
  		
  		// Display the view
  		parent::display($tpl);

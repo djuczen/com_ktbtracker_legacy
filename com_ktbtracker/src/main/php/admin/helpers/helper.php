@@ -12,6 +12,11 @@
 defined('JPATH_PLATFORM') or die;
 
 use Joomla\Registry\Registry;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Access\Access;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Object\CMSObject;
 
 // Register RSMembership helper class
 //JLoader::register('RSMembershipHelper', JPATH_ADMINISTRATOR . '/components/com_rsmembership/helpers/helper.php');
@@ -101,27 +106,27 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	public static function addSubmenu($vName)
 	{
 		JHtmlSidebar::addEntry(
-				JText::_('COM_KTBTRACKER_DASHBOARD_SUBMENU_TITLE'),
+				Text::_('COM_KTBTRACKER_DASHBOARD_SUBMENU_TITLE'),
 				'index.php?option=com_ktbtracker',
 				$vName == 'dashboard'
 		);
 		JHtmlSidebar::addEntry(
-				JText::_('COM_KTBTRACKER_CYCLES_SUBMENU_TITLE'),
+				Text::_('COM_KTBTRACKER_CYCLES_SUBMENU_TITLE'),
 				'index.php?option=com_ktbtracker&view=cycles',
 				$vName == 'cycles'
 		);
 		JHtmlSidebar::addEntry(
-				JText::_('COM_KTBTRACKER_CANDIDATES_SUBMENU_TITLE'),
+				Text::_('COM_KTBTRACKER_CANDIDATES_SUBMENU_TITLE'),
 				'index.php?option=com_ktbtracker&view=candidates',
 				$vName == 'candidates'
 		);
 		JHtmlSidebar::addEntry(
-				JText::_('COM_KTBTRACKER_TRACKING_SUBMENU_TITLE'),
+				Text::_('COM_KTBTRACKER_TRACKING_SUBMENU_TITLE'),
 				'index.php?option=com_ktbtracker&view=tracking',
 				$vName == 'tracking'
 		);
 		JHtmlSidebar::addEntry(
-				JText::_('COM_KTBTRACKER_MASTERS_SUBMENU_TITLE'),
+				Text::_('COM_KTBTRACKER_MASTERS_SUBMENU_TITLE'),
 				'index.php?option=com_ktbtracker&view=masters',
 				$vName == 'masters'
 		);
@@ -130,7 +135,7 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	/**
 	 * Gets a list of the actions that can be performed.
 	 *
-	 * @return  JObject
+	 * @return  CMSObject
 	 *
 	 * @since   1.6
 	 * @todo    Refactor to work with notes
@@ -139,12 +144,12 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	{
 		if (empty(self::$actions))
 		{
-			$user = JFactory::getUser();
-			self::$actions = new JObject;
+			$user = Factory::getUser();
+			self::$actions = new JObject();
 
 			//dump(RSMembershipHelper::getUserSubscriptions($user->id), 'RSMembershipHelper::getUserSubscriptions');
 			
-			$actions = JAccess::getActions('com_ktbtracker');
+			$actions = Access::getActionsFromFile(JPATH_ADMINISTRATOR . '/components/com_ktbtracker/access.xml');
 
 			foreach ($actions as $action)
 			{
@@ -757,10 +762,10 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	public static function getUserTotals($candidate)
 	{
 		// Determine the time zone offset of the site
-		$tzoff = JHtml::date('now', 'P');
+		$tzoff = HTMLHelper::date('now', 'P');
 	
 		// Local JDatabase object
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 	
 		// -------------------------------------------------------------------
 		// Gather totals for the cycle (and split cycle), accounting for NULLS

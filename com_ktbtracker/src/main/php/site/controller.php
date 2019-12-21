@@ -1,21 +1,23 @@
 <?php
 /**
- * @package		Joomla.Site
+ * @package		Joomla.Component
  * @subpackage 	com_ktbtracker
  * 
  * @copyright	Copyright (C) 2012-${COPYR_YEAR} David Uczen Photography, Inc. All Rights Reserved.
  * @license		Licensed Materials - Property of David Uczen Photography, Inc.; see LICENSE.txt
- * 
- * $Id$
  */
 
 defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Router\Route;
 
 
 /**
  * KTB Tracker component master controller (Site).
  */
-class KTBTrackerController extends JControllerLegacy
+class KTBTrackerController extends BaseController
 {
 
 	/**
@@ -24,7 +26,7 @@ class KTBTrackerController extends JControllerLegacy
 	 * @var    string
 	 * @since  11.1
 	 */
-	protected $default_view = 'dashboard';
+	protected $default_view = 'ktbtracker';
 
 	/**
 	 * Typical view method for MVC based architecture
@@ -35,7 +37,7 @@ class KTBTrackerController extends JControllerLegacy
 	 * @param   boolean  $cachable   If true, the view output will be cached
 	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
 	 *
-	 * @return  JControllerLegacy  A JControllerLegacy object to support chaining.
+	 * @return  BaseController  A BaseController object to support chaining.
 	 *
 	 * @since   1.0.0
 	 */
@@ -46,10 +48,11 @@ class KTBTrackerController extends JControllerLegacy
 	    $id = $this->input->get('id');
 	    
 	    // Check for edit forms...
-	    if ($view == 'tracker' && $layout == 'edit' && !$this->checkEditId('com_ktbtracker.edit.tracker', $id)) {
-	        $this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
+	    if ($view == 'tracker' && $layout == 'edit' && !$this->checkEditId('com_ktbtracker.edit.tracker', $id))
+	    {
+	        $this->setError(Text::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
 	        $this->setMessage($this->getError(), 'error');
-	        $this->setRedirect(JRoute::_('index.php?option=com_ktbtracker&view=tracking', false));
+	        $this->setRedirect(Route::_('index.php?option=com_ktbtracker&view=tracking', false));
 	    }
 	    
 	    // Default view processing

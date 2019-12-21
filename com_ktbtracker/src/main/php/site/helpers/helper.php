@@ -11,7 +11,15 @@
 
 defined('JPATH_PLATFORM') or die;
 
+use Joomla\CMS\Access\Access;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Date\Date;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\Registry\Registry;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+use Joomla\CMS\MVC\Model\AdminModel;
 
 // Register RSMembership helper class
 //JLoader::register('RSMembershipHelper', JPATH_ADMINISTRATOR . '/components/com_rsmembership/helpers/helper.php');
@@ -34,19 +42,19 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	protected static $option = 'com_ktbtracker';
 
 	/**
-	 * @var    JObject  A cache for the available actions.
+	 * @var    stdClass  A cache for the available actions.
 	 * @since  1.6
 	 */
 	protected static $actions;
 
 	/**
-	 * @var		JModelAdmin	An instance of the KTBTrackerModelCandidate.
+	 * @var		AdminModel	An instance of the KTBTrackerModelCandidate.
 	 * 
 	 */
 	protected static $candidate_model;
 	
 	/**
-	 * @var		JModelAdmin	An instance of the KTBTrackerModelCycle.
+	 * @var		AdminModel	An instance of the KTBTrackerModelCycle.
 	 *
 	 */
 	protected static $cycle_model;
@@ -101,27 +109,27 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	public static function addSubmenu($vName)
 	{
 		JHtmlSidebar::addEntry(
-				JText::_('COM_KTBTRACKER_DASHBOARD_SUBMENU_TITLE'),
+				Text::_('COM_KTBTRACKER_DASHBOARD_SUBMENU_TITLE'),
 				'index.php?option=com_ktbtracker',
 				$vName == 'dashboard'
 		);
 		JHtmlSidebar::addEntry(
-				JText::_('COM_KTBTRACKER_CYCLES_SUBMENU_TITLE'),
+				Text::_('COM_KTBTRACKER_CYCLES_SUBMENU_TITLE'),
 				'index.php?option=com_ktbtracker&view=cycles',
 				$vName == 'cycles'
 		);
 		JHtmlSidebar::addEntry(
-				JText::_('COM_KTBTRACKER_CANDIDATES_SUBMENU_TITLE'),
+				Text::_('COM_KTBTRACKER_CANDIDATES_SUBMENU_TITLE'),
 				'index.php?option=com_ktbtracker&view=candidates',
 				$vName == 'candidates'
 		);
 		JHtmlSidebar::addEntry(
-				JText::_('COM_KTBTRACKER_TRACKING_SUBMENU_TITLE'),
+				Text::_('COM_KTBTRACKER_TRACKING_SUBMENU_TITLE'),
 				'index.php?option=com_ktbtracker&view=tracking',
 				$vName == 'tracking'
 		);
 		JHtmlSidebar::addEntry(
-				JText::_('COM_KTBTRACKER_MASTERS_SUBMENU_TITLE'),
+				Text::_('COM_KTBTRACKER_MASTERS_SUBMENU_TITLE'),
 				'index.php?option=com_ktbtracker&view=masters',
 				$vName == 'masters'
 		);
@@ -130,7 +138,7 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	/**
 	 * Gets a list of the actions that can be performed.
 	 *
-	 * @return  JObject
+	 * @return  stdClass
 	 *
 	 * @since   1.6
 	 * @todo    Refactor to work with notes
@@ -139,12 +147,12 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	{
 		if (empty(self::$actions))
 		{
-			$user = JFactory::getUser();
-			self::$actions = new JObject;
+			$user = Factory::getUser();
+			self::$actions = new stdClass();
 
 			//dump(RSMembershipHelper::getUserSubscriptions($user->id), 'RSMembershipHelper::getUserSubscriptions');
 			
-			$actions = JAccess::getActions('com_ktbtracker');
+			$actions = Access::getActions('com_ktbtracker');
 
 			foreach ($actions as $action)
 			{
@@ -158,15 +166,16 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	/**
 	 * A simple proxy for the getItem method of the KTBTrackerModleCandidate class.
 	 *
-	 * @return	JObject	the result from KTBTrackerModelCandidate::getItem
+	 * @return	stdClass	the result from KTBTrackerModelCandidate::getItem
 	 */
 	public static function getCandidate($id)
 	{
 		if (empty($id)) return null; // short-circuit failure
 		
-		if (empty(self::$candidate_model)) {
-			JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_ktbtracker/models');
-			self::$candidate_model = JModelAdmin::getInstance('Candidate', 'KTBTrackerModel', array('ignore_request' => true));
+		if (empty(self::$candidate_model))
+		{
+			BaseDatabaseModel::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_ktbtracker/models');
+			self::$candidate_model = AdminModel::getInstance('Candidate', 'KTBTrackerModel', array('ignore_request' => true));
 		}
 	
 		$candidate = self::$candidate_model->getItem($id);
@@ -177,15 +186,16 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	/**
 	 * A simple proxy for the getItem method of the KTBTrackerModleCycle class.
 	 *
-	 * @return	JObject	the result from KTBTrackerModelCycle::getItem
+	 * @return	stdClass	the result from KTBTrackerModelCycle::getItem
 	 */
 	public static function getCycle($id)
 	{
 		if (empty($id)) return null; // short-circuit failure
 		
-		if (empty(self::$cycle_model)) {
-			JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_ktbtracker/models');
-			self::$cycle_model = JModelAdmin::getInstance('Cycle', 'KTBTrackerModel', array('ignore_request' => true));
+		if (empty(self::$cycle_model))
+		{
+			BaseDatabaseModel::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_ktbtracker/models');
+			self::$cycle_model = AdminModel::getInstance('Cycle', 'KTBTrackerModel', array('ignore_request' => true));
 		}
 	
 		$cycle = self::$cycle_model->getItem($id);
@@ -195,24 +205,27 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	
 	public static function getTrackingUser($trackingUser = null, $cycleid = null)
 	{
-		if (empty($trackingUser)) {
-			$trackingUser = JFactory::getApplication()->input->get('trackingUser', null);
+		if (empty($trackingUser))
+		{
+			$trackingUser = Factory::getApplication()->input->get('trackingUser', null);
 		}
 		
-		if (is_null($cycleid)) {
+		if (is_null($cycleid))
+		{
 			$cycleid = self::getCycleId();
 		}
 		
-		$user = JFactory::getUser($trackingUser);
+		$user = Factory::getUser($trackingUser);
 		
 		// See if the tracking user is on a cycle
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 		$query = $db->getQuery(true);
 		
 		$query->select($db->qn('id'));
 		$query->from($db->qn('#__ktbtracker_candidates'));
 		$query->where($db->qn('userid') . ' = ' . (int) $user->id);
-		if (!empty($cycleid)) {
+		if (!empty($cycleid))
+		{
 			$query->where($db->qn('cycleid') . ' = ' . (int) $cycleid);
 		}
 		$query->order($db->qn('cycleid') . ' DESC');
@@ -228,9 +241,9 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	
 	public static function getCycleId($trackingDate = 'now')
 	{
-		$date = new JDate($trackingDate, JFactory::getConfig()->get('offset'));
+		$date = new Date($trackingDate, Factory::getConfig()->get('offset'));
 		
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('a.id');
 		$query->from('#__ktbtracker_cycles AS a');
@@ -252,7 +265,8 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	{
 		$cycle = self::getCurrentCycle();
 		
-		if (!empty($cycle)) {
+		if (!empty($cycle))
+		{
 			return $cycle->id;
 		}
 		
@@ -261,7 +275,7 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	
 	public static function getCurrentCycle()
 	{
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 		$query = $db->getQuery(true);
 		
 		$query->select($db->qn('id'));
@@ -280,9 +294,9 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	
 	public static function getLatestCycle($userid = null)
 	{
-		$user = JFactory::getUser($userid);
+		$user = Factory::getUser($userid);
 		
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 		$query = $db->getQuery(true);
 		
 		$query->select($db->qn('MAX(cycleid)'));
@@ -295,10 +309,10 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	
 	public static function getUserStatistics($candidate = null, $cycleId = null)
 	{
-		$trackingDate = JFactory::getApplication()->input->get('trackingDate', 'now');
-		$trackingUser = JFactory::getApplication()->input->get('trackingUser', null);
+		$trackingDate = Factory::getApplication()->input->get('trackingDate', 'now');
+		$trackingUser = Factory::getApplication()->input->get('trackingUser', null);
 		
-		$user = JFactory::getUser($trackingUser);
+		$user = Factory::getUser($trackingUser);
 		$cycle = null;
 		$interval = null;
 		
@@ -306,33 +320,40 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 		
 		
 		// Attempt to get a candiate if one not presented
-		if (empty($candidate)) {
-			$canId = JFactory::getApplication()->input->get('canid', 0);
+		if (empty($candidate))
+		{
+			$canId = Factory::getApplication()->input->get('canid', 0);
 			
-			if (!empty($canId)) {
+			if (!empty($canId))
+			{
 				$candidate = self::getCandidate($canId);
-			} else {
+			}
+			else
+			{
 				$candidate = self::getTrackingUser();
 			}
 		}
 		
 		// If presented with a candidate, we know the user and the cycle
-		if (!empty($candidate)) {
-			$user = JFactory::getUser($candidate->userid);
+		if (!empty($candidate))
+		{
+			$user = Factory::getUser($candidate->userid);
 			$cycle = self::getCycle($candidate->cycleid);
 		}
 		
 		// Attempt to get a cycle if not presented
 		if (empty($cycle)) {
-			if (is_null($cycleId)) {
-				$cycleId = JFactory::getApplication()->input->get('cycleid', self::getCycleId());
+			if (is_null($cycleId))
+			{
+				$cycleId = Factory::getApplication()->input->get('cycleid', self::getCycleId());
 			}
 			
 			$cycle = self::getCycle($cycleId);
 		}
 		
 		// If presented with a cycle, determine the interval data
-		if (!empty($cycle)) {
+		if (!empty($cycle))
+		{
 			$interval = self::getCycleInterval($cycle, $trackingDate, $candidate);
 		}
 		
@@ -341,7 +362,7 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 		$stats->interval = $interval;
 		$stats->requirements = self::getCycleRequirements();
 		
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 		$query = $db->getQuery(true);
 		
 		// -------------------------------------------------------------------
@@ -391,20 +412,23 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 			$catchup = ($requirement == 'journals') ? 1 : ceil(($goal - $total) / (($interval->days - $interval->day)));
 		    $within = empty($progress_marker) ? 1.0 : ($progress->$requirement->progress / $progress_marker);
 		    
-		    if ($within >= 0.90) {
+		    if ($within >= 0.90)
+		    {
 		        $progress->$requirement->class = 'success';  // within 90%
 		        $progress->$requirement->color = '#38b775';
-		        $progress->$requirement->help = JText::sprintf(
+		        $progress->$requirement->help = Text::sprintf(
 		            ($requirement == 'journals') ? 'COM_KTBTRACKER_TOOLTIP_JOURNALS_SUCCESS' : 'COM_KTBTRACKER_TOOLTIP_PROGRESS_SUCCESS',
 		            $progress->$requirement->progress, 
 		            $progress->$requirement->color,
 		            $progress_marker, 
 		            number_format($progress->$requirement->target, 0), 
 		            number_format($progress->$requirement->daily, 0));
-		    } else if ($within >= 0.80 && $within < 0.90) {
+		    }
+		    else if ($within >= 0.80 && $within < 0.90)
+		    {
 		        $progress->$requirement->class = 'warning';  // within 80%
 		        $progress->$requirement->color = '#ff5722';
-		        $progress->$requirement->help = JText::sprintf(
+		        $progress->$requirement->help = Text::sprintf(
 		            ($requirement == 'journals') ? 'COM_KTBTRACKER_TOOLTIP_JOURNALS_WARNING' : 'COM_KTBTRACKER_TOOLTIP_PROGRESS_WARNING',
 		            $progress->$requirement->progress, 
 		            $progress->$requirement->color,
@@ -412,10 +436,12 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 		            number_format($progress->$requirement->target, 0), 
 		            number_format($progress->$requirement->daily, 0), 
 		            number_format($catchup, 0));
-		    } else {
+		    }
+		    else
+		    {
 		        $progress->$requirement->class = 'danger';   // below 80%
 		        $progress->$requirement->color = '#f44336';
-		        $progress->$requirement->help = JText::sprintf(
+		        $progress->$requirement->help = Text::sprintf(
 		            ($requirement == 'journals') ? 'COM_KTBTRACKER_TOOLTIP_JOURNALS_DANGER' : 'COM_KTBTRACKER_TOOLTIP_PROGRESS_DANGER',
 		            $progress->$requirement->progress, 
 		            $progress->$requirement->color,
@@ -437,11 +463,13 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	{
 		$interval = new stdClass();
 		
-		if (is_null($start_date) || is_null($finish_date)) {
+		if (is_null($start_date) || is_null($finish_date))
+		{
 			return null;
 		}
 		
-		if (is_null($reference_date)) {
+		if (is_null($reference_date))
+		{
 			$reference_date = $start_date;
 		}
 		
@@ -454,11 +482,13 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 		$interval->week = ($today_intvl->invert) ? intval((($today_intvl->days + $week_offset) / 7) * -1) : intval((($today_intvl->days + $week_offset) / 7) + 1);
 		$interval->day = ($today_intvl->invert) ? ($today_intvl->days * -1) : ($today_intvl->days + 1);
 		
-		if ($interval->week == 0) {
+		if ($interval->week == 0)
+		{
 		    $interval->week = 1;
 		}
 		
-		if ($interval->day >= 0) {
+		if ($interval->day >= 0)
+		{
 		    $interval->day += 1;
 		}
 		
@@ -469,22 +499,30 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	{
 		$interval = new stdClass();
 		
-		if (strtotime($cycle->cycle_prestart) > 0) {
+		if (strtotime($cycle->cycle_prestart) > 0)
+		{
 		    $cycle_start = $cycle->cycle_prestart;
-		} else {
+		}
+		else
+		{
 		    $cycle_start = $cycle->cycle_start;
 		}
-		if (!empty($candidate) && strtotime($candidate->goal_start) > 0) {
+		if (!empty($candidate) && strtotime($candidate->goal_start) > 0)
+		{
 			$cycle_start = $candidate->goal_start;
 		}
 		
-		if (strtotime($cycle->cycle_cutoff) > 0) {
+		if (strtotime($cycle->cycle_cutoff) > 0)
+		{
 		    $cycle_finish = $cycle->cycle_cutoff;
-		} else {
+		}
+		else
+		{
 		    $cycle_finish = $cycle->cycle_finish;
 		}
 		$cycle_finish = $cycle->cycle_finish;  // HACK! - Don't include past actual cycle end (for now...)
-		if (!empty($candidate) && strtotime($candidate->goal_finish) > 0) {
+		if (!empty($candidate) && strtotime($candidate->goal_finish) > 0)
+		{
 			$cycle_finish = $candidate->goal_finish;
 		}
 		
@@ -494,8 +532,8 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	
 	public static function getDate($date = 'now')
 	{
-		$calcDate = strtotime(JFactory::getDate((($date == null || is_numeric($date)) ? 'now' : $date),
-				JFactory::getConfig()->get('offset'))->format('Y-m-d'));
+		$calcDate = strtotime(Factory::getDate((($date == null || is_numeric($date)) ? 'now' : $date),
+				Factory::getConfig()->get('offset'))->format('Y-m-d'));
 		
 		return $calcDate;
 	}
@@ -527,9 +565,12 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	    // WARNING: Weeks start on Monday (Sunday is PREVIOUS week)!
 	    $thisDate = self::getDate($date);
 		
-		if (date('w', $thisDate) == 0) {
+		if (date('w', $thisDate) == 0)
+		{
 			$thisSunday = $thisDate;
-		} else {
+		} 
+		else 
+		{
 			$thisSunday = strtotime('last sunday', $thisDate);
 		}
 		$thisSunday = strtotime('-' . date('w', $thisDate) . ' days', $thisDate);
@@ -542,9 +583,12 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	{
 	    dump("KTBTrackerHelper::getThisWeek($date, $weekStart)...");
 	    // Find the current (Sunday-based) week the "cycle week" falls into
-	    if (date('w', self::getDate($date)) >= $weekStart) {
+	    if (date('w', self::getDate($date)) >= $weekStart)
+	    {
 		    $thisWeek = self::getThisSunday($date);
-		} else {
+		}
+		else
+		{
 			$thisWeek = strtotime('-' . (7 - $weekStart) . ' days', self::getThisSunday($date));
 		}
 		
@@ -600,7 +644,7 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 		$weekDays = array();
 		
 		for ($d = 0; $d < 7; $d++) {
-			$weekDays[] = JText::_(self::$weekDays[($d + $weekStart) % 7]);
+			$weekDays[] = Text::_(self::$weekDays[($d + $weekStart) % 7]);
 		}
 		
 		return $weekDays;
@@ -608,27 +652,34 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	
 	public static function loadBootstrap()
 	{
-		$params = JComponentHelper::getParams(self::$option);
+		$params = ComponentHelper::getParams(self::$option);
 		$x = new Registry();
 		
-		if (JFactory::getApplication()->isSite()) {
+		if (Factory::getApplication()->isSite())
+		{
 			// Load in Twitter Bootstrap 3.x or default to active template
-			if ($params->get('loadBS', 0)) {
+			if ($params->get('loadBS', 0))
+			{
 				// Load in jQuery 2.x or default to active template
-				if ($params->get('loadJQ', 0)) {
+				if ($params->get('loadJQ', 0))
+				{
 					// Pull in jQuery 2.2.4
-					JHtml::script('https://code.jquery.com/jquery-2.2.4.min.js');
+					HTMLHelper::script('https://code.jquery.com/jquery-2.2.4.min.js');
 				}
 	
-				JHtml::script('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js');
-				JHtml::stylesheet('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css');
-			} else {
-				// Pull in the Joomla! default Bootstrap 2.3.2 and jQuery 1.x
-				JHtml::_('bootstrap.framework');
+				HTMLHelper::script('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js');
+				HTMLHelper::stylesheet('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css');
 			}
-		} else {
+			else
+			{
+				// Pull in the Joomla! default Bootstrap 2.3.2 and jQuery 1.x
+				HTMLHelper::_('bootstrap.framework');
+			}
+		}
+		else
+		{
 			// Pull in the Joomla! default Bootstrap 2.3.2 and jQuery 1.x
-			JHtml::_('bootstrap.framework');
+			HTMLHelper::_('bootstrap.framework');
 		}
 	}
 	
@@ -637,21 +688,24 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	
 	public static function getPhysicalRequirements($cycle = null)
 	{
-		$params = JComponentHelper::getParams(self::$option);
+		$params = ComponentHelper::getParams(self::$option);
 		$requirements = array();
 		
 		// If we are passed an empty cycle, if the current one if possible
-		if (empty($cycle)) {
+		if (empty($cycle))
+		{
 			$cycle = self::getCurrentCycle();
 		}
 		
 		// Pull in Phyisical Requirements
-		foreach (self::$physical_requirements as $column) {
+		foreach (self::$physical_requirements as $column)
+		{
 			// Get the component or translated default (or 0 if not defined)
-			$requirements[$column] = intval($params->get($column, JText::_('COM_KTBTRACKER_FIELD_' . $column . '_PLACEHOLDER')));
+			$requirements[$column] = intval($params->get($column, Text::_('COM_KTBTRACKER_FIELD_' . $column . '_PLACEHOLDER')));
 			
 			// Override with any values defined in the current cycle (0 means not tracking)
-			if (!empty($cycle) and property_exists($cycle, $column)) {
+			if (!empty($cycle) and property_exists($cycle, $column))
+			{
 				$requirments[$column] = $cycle->$column;
 			}
 		}
@@ -661,21 +715,24 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	
  	public static function getClassRequirements($cycle = null)
 	{	
- 		$params = JComponentHelper::getParams(self::$option);
+ 		$params = ComponentHelper::getParams(self::$option);
 		$requirements = array();
 		
 		// If we are passed an empty cycle, if the current one if possible
-		if (empty($cycle)) {
+		if (empty($cycle))
+		{
 			$cycle = self::getCurrentCycle();
 		}
 		
 		// Pull in Additional Class Requirements
-		foreach (self::$class_requirements as $column) {
+		foreach (self::$class_requirements as $column)
+		{
 			// Get the component or translated default (or 0 if not defined)
-			$requirements[$column] = intval($params->get($column, JText::_('COM_KTBTRACKER_FIELD_' . $column . '_PLACEHOLDER')));
+			$requirements[$column] = intval($params->get($column, Text::_('COM_KTBTRACKER_FIELD_' . $column . '_PLACEHOLDER')));
 			
 			// Override with any values defined in the current cycle (0 means not tracking)
-			if (!empty($cycle) and property_exists($cycle, $column)) {
+			if (!empty($cycle) and property_exists($cycle, $column))
+			{
 				$requirments[$column] = $cycle->$column;
 			}
 		}
@@ -685,22 +742,26 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	
  	public static function getOtherRequirements($cycle = null)
 	{	
- 		$params = JComponentHelper::getParams(self::$option);
+ 		$params = ComponentHelper::getParams(self::$option);
 		$requirements = array();
 		
 		// If we are passed an empty cycle, if the current one if possible
-		if (empty($cycle)) {
+		if (empty($cycle))
+		{
 			$cycle = self::getCurrentCycle();
 		}
 		
 		// Pull in Other Requirements
-		foreach (self::$other_requirements as $column) {
+		foreach (self::$other_requirements as $column)
+		{
 			// Get the component or translated default (or 0 if not defined)
-			$requirements[$column] = intval($params->get($column, JText::_('COM_KTBTRACKER_FIELD_' . $column . '_PLACEHOLDER')));
+			$requirements[$column] = intval($params->get($column, Text::_('COM_KTBTRACKER_FIELD_' . $column . '_PLACEHOLDER')));
 			
 			// Override with any values defined in the current cycle (0 means not tracking)
-			if (!empty($cycle) and property_exists($cycle, $column)) {
-				if (!is_null($cycle->$column)) {
+			if (!empty($cycle) and property_exists($cycle, $column))
+			{
+				if (!is_null($cycle->$column))
+				{
 					$requirments[$column] = $cycle->$column;
 				}
 			}
@@ -714,32 +775,38 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	    $reserved = array('id', 'title', 'alias', 'created', 'created_by', 'modified', 'modified_by', 'checked_out', 'checked_out_time');
 	    $virtuals = array('journals');
 	    
-	    $db = JFactory::getDbo();
+	    $db = Factory::getDbo();
 	    $db->setQuery("SHOW COLUMNS FROM #__ktbtracker_requirements");
 	    $columns = array_values($db->loadColumn());
 	    
-	    if ($skip_virtuals) {
-	        return array_diff($columns, $reserved, $virtuals);
+	    if ($skip_virtuals)
+	    {
+	        return array_values(array_diff($columns, $reserved, $virtuals));
 	    }
 	    
-	    return array_diff($columns, $reserved);
+	    return array_values(array_diff($columns, $reserved));
 	}
 	
 	public static function getCycleGoalSet($candidate)
 	{
         // Create a new query object.
-        $db = JFactory::getDbo();
+        $db = Factory::getDbo();
         
         $cycle = self::getCycle($candidate->cycleid);
 
         $query = $db->getQuery(true);
         $query->select($db->qn(self::getCycleRequirements()));
         $query->from($db->qn('#__ktbtracker_requirements'));
-        if (!empty($candidate->cycle_goals)) {
+        if (!empty($candidate->cycle_goals))
+        {
             $query->where($db->qn('id') . ' = ' . (int) $candidate->cycle_goals);
-        } elseif (!empty($cycle->cycle_goals)) {
+        }
+        elseif (!empty($cycle->cycle_goals))
+        {
             $query->where($db->qn('id') . ' = ' . (int) $cycle->cycle_goals);
-        } else {
+        } 
+        else
+        {
             $query->where($db->qn('id') . ' = 1');
         }
         $db->setQuery($query);
@@ -751,10 +818,10 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	public static function getUserTotals($candidate)
 	{
 		// Determine the time zone offset of the site
-		$tzoff = JHtml::date('now', 'P');
+		$tzoff = HTMLHelper::date('now', 'P');
 	
 		// Local JDatabase object
-		$db = JFactory::getDbo();
+		$db = Factory::getDbo();
 	
 		// -------------------------------------------------------------------
 		// Gather totals for the cycle (and split cycle), accounting for NULLS
@@ -766,7 +833,8 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	
 		$req_columns = array();
 		
-        foreach (self::getCycleRequirements(true) as $req) {
+        foreach (self::getCycleRequirements(true) as $req)
+        {
              $req_columns[] = 'COALESCE(SUM(' . $db->qn($req) . '), 0) AS ' . $db->qn($req);    
         }
         
@@ -784,19 +852,26 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
 	
 		$totals = $db->loadObject();
 	
-		if ($candidate->cont_cycleid) {
+		if ($candidate->cont_cycleid)
+		{
 	
 			// Determine continued cycle start/end dates
 			$cont_cycle = self::getCycle($candidate->cont_cycleid);
 				
-			if ($cont_cycle->publish_up > $db->getNullDate()) {
+			if ($cont_cycle->publish_up > $db->getNullDate())
+			{
 				$cont_start = $cont_cycle->publish_up;
-			} else {
+			}
+			else
+			{
 				$cont_start = $cont_cycle->cycle_start;
 			}
-			if ($cont_cycle->publish_down > $db->getNullDate()) {
+			if ($cont_cycle->publish_down > $db->getNullDate())
+			{
 				$cont_finish = $cont_cycle->publish_down;
-			} else {
+			}
+			else 
+			{
 				$cont_finish = $cont_cycle->cycle_finish;
 			}
 				
@@ -818,10 +893,12 @@ JLoader::import('ktbtracker', JPATH_ADMINISTRATOR . '/components/com_ktbtracker/
             $goals = self::getCycleGoalSet($candidate);
             foreach (get_object_vars($totals) as $key => $value)
             {
-                if (in_array($key, self::getPhysicalRequirements($cycle))) {
+                if (in_array($key, self::getPhysicalRequirements($cycle)))
+                {
                     $totals->$key += min($cont_totals->$key, ($goals->$key * 0.50));
                 }
-                if (in_array($key, self::getClassRequirements($cycle))) {
+                if (in_array($key, self::getClassRequirements($cycle)))
+                {
                     $totals->$key += min($cont_totals->$key, ($goals->$key * 0.33));
                 }
             }
